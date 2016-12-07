@@ -1,0 +1,23 @@
+html, body {
+  font-family: Verdana, Geneva, sans-serif;
+}
+a, button {
+  border: none;
+  color: skyblue;
+  background: transparent;
+  text-decoration: none;
+  cursor: poiner;
+}
+ul, li {
+  list-style-type: none;
+}
+ul:hover, li:hover {
+  list-style-type: inherit;
+}
+input {
+  border: none;
+  border-bottom: dashed 1px gainsboro;
+}
+.none, #model {
+  display: none;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "js-trafficlights",
+  "version": "1.0.0",
+  "description": "Awesome Javascript traffic lights manager!",
+  "main": "index.js",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "gun": "^0.3.9991",
+    "http": "0.0.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niccord/js-trafficlights.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/niccord/js-trafficlights/issues"
+  },
+  "homepage": "https://github.com/niccord/js-trafficlights#readme"
+}
