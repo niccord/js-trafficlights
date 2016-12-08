@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
+    <meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<script src="gun.js"></script>
+		<link rel="stylesheet" href="client/style.css"></link>
+		<script src="client/gun.js"></script>
 	</head>
 	<body>
 		<h3>Admin JSON Editor</h3>
@@ -25,15 +27,18 @@
 		<script> // minimal jQuery polyfill
 			var $ = function(s, e){ return (e || document).querySelector(s) }
 			function clean(text){ return String(text).replace(/\</ig, '&lt;') }
-		</script>
-		<script>
+
 			var gun = Gun(location.origin + '/gun');
-			var ref = gun.get('./db/data');
+			var ref = gun.get('data');
 			$('#form').onsubmit = function(e){
-				return ref.path( clean($('#field').value) ).put("value"), false; // add a new field, and cancel the form submit.
+				var retVal = ref.path( clean($('#field').value) ).put("value");
+				$('#field').value('');
+				return retVal, false; // add a new field, and cancel the form submit.
 			}
 			$('#clear').onclick = function (e) {
-
+				var retVal = ref.map().put(null);
+				document.getElementById('data').innerHTML = "";
+				return retVal, false;
 			}
 			document.onkeyup = function(e){
 				if(!e || !e.target){ return } // ignore if no element!
@@ -44,37 +49,14 @@
 			ref.on(function(data){
 				delete data._; // skip meta data!
 				for(var field in data){
-					var val = String(data[field]), id = field.replace(/[^A-z]/ig, ''), elem; // make data safe.
-					(elem = $('#' + id) || $('#data').appendChild($('#model').cloneNode(true))).id = id; // reuse or make element, set id.
-					$('b', elem).innerHTML = clean(field); // escape and display field
-					$('span', elem).innerHTML = clean(val); // escape and display value
+					if (field && data[field]) {
+						var val = String(data[field]), id = field.replace(/[^A-z]/ig, ''), elem; // make data safe.
+						(elem = $('#' + id) || $('#data').appendChild($('#model').cloneNode(true))).id = id; // reuse or make element, set id.
+						$('b', elem).innerHTML = clean(field); // escape and display field
+						$('span', elem).innerHTML = clean(val); // escape and display value
+					}
 				}
 			});
 		</script>
-		<style>
-			html, body {
-				font-family: Verdana, Geneva, sans-serif;
-			}
-			a, button {
-				border: none;
-				color: skyblue;
-				background: transparent;
-				text-decoration: none;
-				cursor: poiner;
-			}
-			ul, li {
-				list-style-type: none;
-			}
-			ul:hover, li:hover {
-				list-style-type: inherit;
-			}
-			input {
-				border: none;
-				border-bottom: dashed 1px gainsboro;
-			}
-			.none, #model {
-				display: none;
-			}
-		</style>
 	</body>
 </html>

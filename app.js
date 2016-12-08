@@ -24,4 +24,4 @@ var server = http.createServer(function(req, res){
 gun.wsp(server);
 server.listen(port, ip);
 
-console.log('Server started on port', port, 'with /gun');
+console.log('Server started on port', port);

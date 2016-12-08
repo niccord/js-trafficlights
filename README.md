@@ -1,6 +1,17 @@
 # js-trafficlights
 (Yet another) Awesome Javascript traffic lights manager!
 
+js-trafficlights is a easy-to-use all-in-one shared resource manager
+
+Does your team have a limited number of access to a VPN customer network?
+Or a shared folder?
+Or a repository?
+Do you want to know when and who uses the resource?
+
+Mark as used on js-trafficlights and it will be instantly available to the rest of your team via browser!
+
+Thanks to the [http://gun.js.org](Gun) team.
+
 ## How to start
 ```bash
 npm install
