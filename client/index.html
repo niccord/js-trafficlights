@@ -5,58 +5,38 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="client/style.css"></link>
 		<script src="client/gun.js"></script>
+		<script src="client/angular.min.js"></script>
+		<script src="client/trafficlightsController.js"></script>
 	</head>
-	<body>
-		<h3>Admin JSON Editor</h3>
-		This is a live view of your data, you can edit it in realtime or add new field/values.
-		<ul id="data">
+	<body ng-app="trafficlights" ng-controller="trafficlightsController">
+		<h3>JS-Trafficlights</h3>
+		This is a live view of your data, you can edit it in realtime or add new field/values.<br />
+		<ul>
+			<li ng-repeat="field in data">
+				<b>{{field.id}}</b>
+				<span>{{field.data}}</span>
+			</li>
 		</ul>
-		<button id="clear" onclick="localStorage.clear()">clear</button>
+		<button id="clear" ng-click="clear()">clear</button>
 		<li id="model">
 			<b>field</b>:
 			<span contenteditable="true">val</span>
 		</li>
-		<ul><li>
-			<form id="form">
+		<ul>
+			<li>
 				<label>
-					<input id="field" placeholder="field">
-					<button type="submit">add</button>
+					<input id="field" ng-model="addField" placeholder="field">
+					<button id="add" ng-click="addTrafficlight()">add</button>
 				</label>
-			</form>
-		</li></ul>
-		<script> // minimal jQuery polyfill
-			var $ = function(s, e){ return (e || document).querySelector(s) }
-			function clean(text){ return String(text).replace(/\</ig, '&lt;') }
-
-			var gun = Gun(location.origin + '/gun');
-			var ref = gun.get('data');
-			$('#form').onsubmit = function(e){
-				var retVal = ref.path( clean($('#field').value) ).put("value");
-				$('#field').value('');
-				return retVal, false; // add a new field, and cancel the form submit.
-			}
-			$('#clear').onclick = function (e) {
-				var retVal = ref.map().put(null);
-				document.getElementById('data').innerHTML = "";
-				return retVal, false;
-			}
+			</li>
+		</ul>
+		<!-- <script>
 			document.onkeyup = function(e){
 				if(!e || !e.target){ return } // ignore if no element!
 				if(!e.target.attributes.contenteditable){ return } // ignore if element content isn't editable!
 				ref.path(clean(e.target.previousElementSibling.innerHTML)) // grab the label, which is in the previous element.
 				   .put( clean(e.target.innerHTML) ); // insert the value of the text in the current element.
 			}
-			ref.on(function(data){
-				delete data._; // skip meta data!
-				for(var field in data){
-					if (field && data[field]) {
-						var val = String(data[field]), id = field.replace(/[^A-z]/ig, ''), elem; // make data safe.
-						(elem = $('#' + id) || $('#data').appendChild($('#model').cloneNode(true))).id = id; // reuse or make element, set id.
-						$('b', elem).innerHTML = clean(field); // escape and display field
-						$('span', elem).innerHTML = clean(val); // escape and display value
-					}
-				}
-			});
-		</script>
+		</script> -->
 	</body>
 </html>
