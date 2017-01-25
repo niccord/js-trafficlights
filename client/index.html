@@ -10,13 +10,25 @@
 	</head>
 	<body ng-app="trafficlights" ng-controller="trafficlightsController">
 		<h3>JS-Trafficlights</h3>
-		This is a live view of your data, you can edit it in realtime or add new field/values.<br />
-		<ul>
-			<li ng-repeat="field in data">
-				<b>{{field.id}}</b>
-				<span>{{field.data}}</span>
-			</li>
-		</ul>
+		<table>
+			<thead>
+				<tr>
+				<th>Name</th>
+				<th>Used by</th>
+				<th>Used from</th>
+				<th>In use</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="obj in structuredData">
+					<td>{{obj.name}}</td>
+					<td>{{obj.used_by}}</td>
+					<td>{{obj.used_from}}</td>
+					<td ng-if="obj.in_use">Occupied</td>
+					<td ng-if="!obj.in_use"><a ng-click="">Free</a></td>
+				</tr>
+			</tbody>
+		</table>
 		<button id="clear" ng-click="clear()">clear</button>
 		<li id="model">
 			<b>field</b>:

@@ -1,18 +1,23 @@
-html, body {
-  font-family: Verdana, Geneva, sans-serif;
+html {
+  font-family: Verdana;
 }
-a, button {
+a {
+  background: transparent;
+  text-decoration: underline;
+  cursor: pointer;
+}
+button {
   border: none;
   color: skyblue;
   background: transparent;
   text-decoration: none;
-  cursor: poiner;
+  cursor: pointer;
 }
-ul, li {
-  list-style-type: none;
+td {
+  padding: 5px 5px 5px 10px;
 }
-ul:hover, li:hover {
-  list-style-type: inherit;
+th {
+  padding: 5px 10px 5px 10px;
 }
 input {
   border: none;
