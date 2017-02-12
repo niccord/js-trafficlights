@@ -6,49 +6,52 @@
 		<link rel="stylesheet" href="client/style.css"></link>
 		<script src="client/gun.js"></script>
 		<script src="client/angular.min.js"></script>
+    	<script src="client/moment.min.js"></script>
 		<script src="client/trafficlightsController.js"></script>
 	</head>
 	<body ng-app="trafficlights" ng-controller="trafficlightsController">
 		<h3>JS-Trafficlights</h3>
+		<div>
+			<label>
+				Username:
+				<input id="username" ng-model="username" placeholder="nome utente" />
+			</label>
+		</div>
 		<table>
 			<thead>
 				<tr>
-				<th>Name</th>
-				<th>Used by</th>
-				<th>Used from</th>
-				<th>In use</th>
+					<th ng-click="orderColumn('name')">Name</th>
+					<th ng-click="orderColumn('type')">Type</th>
+					<th ng-click="orderColumn('used_by')">Used by</th>
+					<th ng-click="orderColumn('used_from')">Used from</th>
+					<th ng-click="orderColumn('in_use')">In use</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="obj in structuredData">
 					<td>{{obj.name}}</td>
-					<td>{{obj.used_by}}</td>
-					<td>{{obj.used_from}}</td>
-					<td ng-if="obj.in_use">Occupied</td>
-					<td ng-if="!obj.in_use"><a ng-click="">Free</a></td>
+					<td>{{obj.type}}</td>
+					<td ng-if="obj.in_use">{{obj.used_by}}</td>
+					<td ng-if="obj.in_use">{{obj.used_from}}</td>
+					<td ng-if="obj.in_use"><a ng-click="setFree(obj.name)">Occupied</a></td>
+					<td ng-if="!obj.in_use">{{obj.used_by}}</td>
+					<td ng-if="!obj.in_use">{{obj.used_from}}</td>
+					<td ng-if="!obj.in_use"><a ng-click="setOccupied(obj.name)">Free</a></td>
+					<td ng-if="!obj.in_use"><a ng-click="remove(obj.name)">Remove</a></td>
 				</tr>
 			</tbody>
 		</table>
-		<button id="clear" ng-click="clear()">clear</button>
-		<li id="model">
-			<b>field</b>:
-			<span contenteditable="true">val</span>
-		</li>
-		<ul>
-			<li>
-				<label>
-					<input id="field" ng-model="addField" placeholder="field">
-					<button id="add" ng-click="addTrafficlight()">add</button>
-				</label>
-			</li>
-		</ul>
-		<!-- <script>
-			document.onkeyup = function(e){
-				if(!e || !e.target){ return } // ignore if no element!
-				if(!e.target.attributes.contenteditable){ return } // ignore if element content isn't editable!
-				ref.path(clean(e.target.previousElementSibling.innerHTML)) // grab the label, which is in the previous element.
-				   .put( clean(e.target.innerHTML) ); // insert the value of the text in the current element.
-			}
-		</script> -->
+		<div>
+			<label>
+				<input id="name" ng-model="newName" placeholder="name">
+				<input id="type" ng-model="newType" placeholder="type">
+				<button id="add" ng-click="addTrafficlight()">add</button>
+			</label>
+		</div>
+		<div>
+			<label>
+				<button id="clear" ng-click="clear()">CLEAR</button>
+			</label>
+		</div>
 	</body>
 </html>
