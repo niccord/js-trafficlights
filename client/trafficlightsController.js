@@ -98,10 +98,12 @@ angular.module('trafficlights', [])
   }
 
   $scope.remove = function (name) {
+    if (confirm(`Are you sure you want to delete resource "${name}"?`)) {
       $scope.gun.get('data').path(name + '/used_by').put(null);
       $scope.gun.get('data').path(name + '/used_from').put(null);
       $scope.gun.get('data').path(name + '/type').put(null);
       $scope.gun.get('data').path(name).put(null);
+    }
   }
 
   $scope.sortColumn = function (columnName) {
