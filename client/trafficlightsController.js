@@ -1,5 +1,8 @@
 angular.module('trafficlights', [])
 .controller('trafficlightsController', function ($scope, $timeout){
+    
+  $scope.data = [];
+  $scope.structuredData = [];
 
   var getObjFromArray = function (array, name) {
     for (var o = 0; o < array.length; o++) {
@@ -12,58 +15,25 @@ angular.module('trafficlights', [])
 
   $scope.gun = Gun(location.origin + '/gun');
 
-  $scope.gun.get('data').on(function(data){
-    delete data._; // skip meta data!
-    $timeout(function () {
-      $scope.data = [];
-      $scope.structuredData = [];
-      for (var v in data) {
-        if (data[v] !== null && data[v] !== undefined) {
-          $scope.data.push({ id: v, data: data[v] });
-          var name = v;
-          var indexOfSlash = v.indexOf('/');
-          if (indexOfSlash > 0) {
-            name = name.substring(0, indexOfSlash);
-          }
-          var obj = getObjFromArray($scope.structuredData, name);
-          if (obj) {
-            if (indexOfSlash > 0) { 
-              var attribute = v.substring(indexOfSlash + 1, v.length);
-              obj[attribute] = data[v];
-              if (v.endsWith('/used_by') || v.endsWith('/used_from')) {
-                obj.in_use = true;
-              }
-            }
-            else {
-              obj[v] = data[v];
-            }
-          }
-          else {
-            obj = {};
-            obj.in_use = false;
-            obj.name = name;
-            if (indexOfSlash > 0) { 
-              var attribute = v.substring(indexOfSlash + 1, v.length);
-              obj[attribute] = data[v];
-              if (v.endsWith('/used_by') || v.endsWith('/used_from')) {
-                obj.in_use = true;
-              }
-            }
-            $scope.structuredData.push(obj);
-          }
-        }
-      }
-    }, 0);
+  $scope.gun.get('data').map().val( function (a, b, c, d, e, f) {
+    if (a != null) {
+      $scope.data.push(a);
+      $scope.structuredData.push(a);
+    }
   });
 
   $scope.addTrafficlight = function () {
     var field_value = $scope.newName.trim();
     var new_type = $scope.newType.trim();
     if (field_value !== '' && new_type !== '') {
-      $scope.gun.get('data').path(field_value).put(field_value);
-      $scope.gun.get('data').path(field_value + '/used_by').put(null);
-      $scope.gun.get('data').path(field_value + '/used_from').put(null);
-      $scope.gun.get('data').path(field_value + '/type').put(new_type);
+      const traffic_light = {};
+      traffic_light.name = field_value;
+      traffic_light.type = new_type;
+      traffic_light.used_by = null;
+      traffic_light.used_from = null;
+
+      $scope.gun.get('data').path(field_value).put(traffic_light);
+
       $scope.newName = '';
       $scope.newType = '';
 
@@ -82,10 +52,16 @@ angular.module('trafficlights', [])
   $scope.setOccupied = function (name) {
     var username = $scope.username;
     if (username && username.trim() !== '') {
-      var dataora = new Date();
 
-      $scope.gun.get('data').path(name + '/used_by').put(username);
-      $scope.gun.get('data').path(name + '/used_from').put(moment(dataora.toString()).format("DD MMM YYYY HH:mm:ss"));
+      //$scope.gun.get('data').path(name + '/used_by').put(username);
+      //$scope.gun.get('data').path(name + '/used_from').put(moment(dataora.toString()).format("DD MMM YYYY HH:mm:ss"));
+      $scope.gun.get('data').map().val( function (a, b, c, d, e, f) {
+        if (a != null && a.name === name) {
+          a.used_by = username;
+          //a.used_from = new Date();
+          $scope.gun.get('data').path(name).put(a);
+        }
+      });
     }
     else {
       document.getElementById('username').focus();
