@@ -2,24 +2,27 @@ angular.module('trafficlights', [])
 .controller('trafficlightsController', function ($scope, $timeout){
     
   $scope.data = [];
-  $scope.structuredData = [];
-
-  var getObjFromArray = function (array, name) {
-    for (var o = 0; o < array.length; o++) {
-      var obj = array[o];
-      if (obj.name === name) {
-        return obj;
-      }
-    }
-  };
 
   $scope.gun = Gun(location.origin + '/gun');
 
-  $scope.gun.get('data').map().val( function (a, b, c, d, e, f) {
-    if (a != null) {
-      $scope.data.push(a);
-      $scope.structuredData.push(a);
-    }
+  $scope.gun.get('data').map().on( function (value, key) {
+    $timeout(function() {
+      const res = getElemFromName(key);
+      if (res !== undefined) {
+        if (value != null) {
+          res.used_by = value.used_by;
+          res.used_from = value.used_from;
+          res.in_use = value.in_use;
+        }
+        else {
+          const index = $scope.data.indexOf(res);
+          $scope.data.splice(index, 1);
+        }
+      }
+      else if (value !== null) {
+        $scope.data.push(value);
+      }
+    }, 0);
   });
 
   $scope.addTrafficlight = function () {
@@ -42,26 +45,33 @@ angular.module('trafficlights', [])
   }
 
   $scope.clear = function() {
-    var continueclear = confirm('Cancellare tutti i dati?');
+    var continueclear = confirm('Delete all data?');
     if (continueclear) {
       $scope.gun.get('data').map().put(null);
       $scope.data = [];
     }
   }
 
+  function getElemFromName(name) {
+    for (let d in $scope.data) {
+        let res = $scope.data[d];
+        if (res.name === name) {
+          return res;
+        }
+    }
+  }
+
   $scope.setOccupied = function (name) {
     var username = $scope.username;
     if (username && username.trim() !== '') {
+      const res = getElemFromName(name);
+      res.used_by = username;
 
-      //$scope.gun.get('data').path(name + '/used_by').put(username);
-      //$scope.gun.get('data').path(name + '/used_from').put(moment(dataora.toString()).format("DD MMM YYYY HH:mm:ss"));
-      $scope.gun.get('data').map().val( function (a, b, c, d, e, f) {
-        if (a != null && a.name === name) {
-          a.used_by = username;
-          //a.used_from = new Date();
-          $scope.gun.get('data').path(name).put(a);
-        }
-      });
+      const dataora = new Date();
+      res.used_from = moment(dataora.toString()).format("DD MMM YYYY HH:mm:ss");
+
+      res.in_use = true;
+      $scope.gun.get('data').path(name).put(res);
     }
     else {
       document.getElementById('username').focus();
@@ -69,15 +79,15 @@ angular.module('trafficlights', [])
   }
 
   $scope.setFree = function (name) {
-      $scope.gun.get('data').path(name + '/used_by').put(null);
-      $scope.gun.get('data').path(name + '/used_from').put(null);
+    const res = getElemFromName(name);
+    res.used_by = null;
+    res.used_from = null;
+    res.in_use = false;
+    $scope.gun.get('data').path(name).put(res);
   }
 
   $scope.remove = function (name) {
     if (confirm(`Are you sure you want to delete resource "${name}"?`)) {
-      $scope.gun.get('data').path(name + '/used_by').put(null);
-      $scope.gun.get('data').path(name + '/used_from').put(null);
-      $scope.gun.get('data').path(name + '/type').put(null);
       $scope.gun.get('data').path(name).put(null);
     }
   }
@@ -85,13 +95,13 @@ angular.module('trafficlights', [])
   $scope.sortColumn = function (columnName) {
     
     if ($scope.order && $scope.order.column === columnName) {
-        $scope.order.asc_desc *= -1;
+      $scope.order.asc_desc *= -1;
     }
     else {
       $scope.order = { column: columnName, asc_desc: 1};
     }
     
-    $scope.structuredData.sort( function (a, b) {
+    $scope.data.sort( function (a, b) {
       var a = a[columnName] || '';
       var b = b[columnName] || '';
         
@@ -101,7 +111,7 @@ angular.module('trafficlights', [])
       else if (columnName === 'used_from') {
         a = new Date(a || 0);
         b = new Date(b || 0);
-        return a.getTime() - b.getTime() * $scope.order.asc_desc;
+        return (a.getTime() - b.getTime()) * $scope.order.asc_desc;
       }
       else {
         return (a - b) * $scope.order.asc_desc
