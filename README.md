@@ -12,7 +12,7 @@ Mark as used on js-trafficlights and it will be instantly available to the rest 
 
 ![screenshot of js-trafficlights](https://raw.githubusercontent.com/niccord/js-trafficlights/master/js-trafficlights.PNG)
 
-Thanks to the [http://gun.js.org](Gun) team.
+Thanks to the [Gun](http://gun.js.org) team.
 
 ## How to start
 ```bash
