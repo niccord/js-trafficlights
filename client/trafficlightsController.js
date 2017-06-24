@@ -66,8 +66,8 @@ angular.module('trafficlights', [])
       const res = getElemFromName(name);
       res.used_by = username;
 
-      const dataora = new Date();
-      res.used_from = moment(dataora).format("DD MMM YYYY HH:mm:ss");
+      const datetime = new Date();
+      res.used_from = moment(datetime).format("DD MMM YYYY HH:mm:ss");
 
       res.in_use = true;
       $scope.gun.get('data').path(name).put(res);
