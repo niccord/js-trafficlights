@@ -48,7 +48,6 @@ angular.module('trafficlights', [])
     var continueclear = confirm('Delete all data?');
     if (continueclear) {
       $scope.gun.get('data').map().put(null);
-      $scope.data = [];
     }
   }
 
@@ -68,7 +67,7 @@ angular.module('trafficlights', [])
       res.used_by = username;
 
       const dataora = new Date();
-      res.used_from = moment(dataora.toString()).format("DD MMM YYYY HH:mm:ss");
+      res.used_from = moment(dataora).format("DD MMM YYYY HH:mm:ss");
 
       res.in_use = true;
       $scope.gun.get('data').path(name).put(res);
