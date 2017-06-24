@@ -10,6 +10,8 @@ Do you want to know when and who uses the resource?
 
 Mark as used on js-trafficlights and it will be instantly available to the rest of your team via browser!
 
+![screenshot of js-trafficlights](https://raw.githubusercontent.com/niccord/js-trafficlights/master/js-trafficlights.PNG)
+
 Thanks to the [http://gun.js.org](Gun) team.
 
 ## How to start
