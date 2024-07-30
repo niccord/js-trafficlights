@@ -13,6 +13,11 @@ var gun = Gun({
 });
 
 var server = http.createServer(function(req, res){
+	if (path.normalize(decodeURIComponent(req.url)) !== decodeURIComponent(req.url)) {
+		res.statusCode = 403;
+		res.end();
+		return;
+	}
 	if(gun.wsp.server(req, res)){
 		return; // filters gun requests!
 	}
